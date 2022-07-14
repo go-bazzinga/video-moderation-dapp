@@ -1,0 +1,141 @@
+type Votes = 
+ record {
+   count: nat;
+   setVotes: PrincipalSet;
+ };
+type UserProfile = 
+ record {
+   token: Token;
+   uploadedVideo: vec UploadedVideo;
+ };
+type UploadedVideoStatus = 
+ variant {
+   completed;
+   explicit;
+   processing: record {operationName: text;};
+   rejected;
+   reported;
+   uploaded;
+ };
+type UploadedVideoOperationStatus = 
+ variant {
+   initialized: text;
+   notinitialized;
+ };
+type UploadedVideo = 
+ record {
+   description: text;
+   gcsUri: text;
+   name: text;
+   operationName: UploadedVideoOperationStatus;
+   reports: Votes;
+   status: UploadedVideoStatus;
+   uploadedAt: Time;
+   uploadedBy: principal;
+   upvotes: Votes;
+ };
+type UpdateStatusReq = 
+ variant {
+   gcsUri: GCSUri;
+   operation: OperationName;
+ };
+type UnprocessedVideo = 
+ record {
+   gcsUri: GCSUri;
+   operationName: OperationName;
+   uploadedBy: principal;
+ };
+type Trie = 
+ variant {
+   branch: Branch;
+   "empty";
+   leaf: Leaf;
+ };
+type Token = record {balance: nat;};
+type Time = int;
+type StakePot = 
+ record {
+   stakes: vec PotDetails;
+   totalStakedTokens: nat;
+ };
+type Stake = 
+ variant {
+   approve;
+   reject;
+ };
+type ResponseWithStatus = 
+ record {
+   message: text;
+   success: bool;
+ };
+type ReportedVideo = 
+ record {
+   approvalPot: StakePot;
+   gcsUri: GCSUri;
+   rejectionPot: StakePot;
+   uploadedBy: principal;
+   votingStarted: bool;
+   votingStartedAt: Time;
+ };
+type PrincipalSet = 
+ variant {
+   branch: Branch;
+   "empty";
+   leaf: Leaf;
+ };
+type PotDetails = 
+ record {
+   stakedTokens: nat;
+   userPrincipal: principal;
+ };
+type OperationName = text;
+type List = 
+ opt record {
+       record {
+         Key;
+         null;
+       };
+       List;
+     };
+type Leaf = 
+ record {
+   keyvals: AssocList;
+   size: nat;
+ };
+type Key = 
+ record {
+   hash: Hash;
+   key: principal;
+ };
+type Hash = nat32;
+type GCSUri = text;
+type Branch = 
+ record {
+   left: Trie;
+   right: Trie;
+   size: nat;
+ };
+type AssocList = 
+ opt record {
+       record {
+         Key;
+         null;
+       };
+       List;
+     };
+service : {
+  addVideo: (text, text, text) -> (ResponseWithStatus);
+  getAllVideos: () -> (vec UploadedVideo) query;
+  getMyVideos: () -> (vec UploadedVideo);
+  getPendingVideos: () -> (vec UnprocessedVideo) query;
+  getReportedVideos: () -> (vec ReportedVideo) query;
+  getReportedVideosDetails: () -> (vec UploadedVideo) query;
+  get_controllers: () -> (vec principal);
+  myTokens: () -> (nat) query;
+  report: (GCSUri, principal) -> (bool);
+  stake: (GCSUri, Stake, nat) -> (ResponseWithStatus);
+  updateVideoStatus: (UpdateStatusReq, UploadedVideoStatus) -> ();
+  upsertUser: (principal) -> (UserProfile);
+  upvote: (bool, GCSUri, principal) -> (bool);
+  whoami: () -> (principal) query;
+}
