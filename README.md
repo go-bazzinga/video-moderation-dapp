@@ -31,7 +31,7 @@ Finalist in Social-Fi category.
 
 # Architecture
 
-`TODO`
+![](architecture.png)
 
 # Voting mechanism (example scenario):
 
