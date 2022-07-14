@@ -1,0 +1,32 @@
+name: Run tests and deploy to mainnet on push to main
+on: push
+
+jobs:
+  mainnet-deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: DFX_VERSION=0.10.0 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
+      - run: dfx identity list
+      - run: |
+          touch actions_identity.pem
+          echo "${{ secrets.DFX_IDENTITY }}" > actions_identity.pem
+          dfx identity import --disable-encryption actions actions_identity.pem
+          rm actions_identity.pem
+          dfx identity use actions
+      - run: npm install
+      - run: |
+          touch .env
+          echo "VITE_CLOUDFLARE_WORKERS_API_URL=\"$VITE_CLOUDFLARE_WORKERS_API_URL\"" >> .env
+          echo "VITE_INTERNET_IDENTITY_URL=\"$VITE_INTERNET_IDENTITY_URL\"" >> .env
+          echo "VITE_GA_TRACKING_ID=\"$VITE_GA_TRACKING_ID\"" >> .env
+        working-directory: src/frontend/
+        env:
+          VITE_FUNCTIONS_HOST: "https://your-project-name.cloudfunctions.net"
+          VITE_GCS_BUCKET_NAME: "gs://bucket-name"
+      - run: npm run build
+      - run: dfx deploy --network ic --no-wallet
