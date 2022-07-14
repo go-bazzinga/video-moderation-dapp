@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "strict": true,
+    "target": "es2017",
+    "baseUrl": ".",
+    "paths": {
+      "$canisters/*": ["src/declarations/*"],
+		},
+  },
+  "compileOnSave": true,
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+  ]
+}
