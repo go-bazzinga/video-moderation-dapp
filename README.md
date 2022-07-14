@@ -15,7 +15,7 @@ Finalist in Social-Fi category.
 
 -   Backend:
 
-    -   Insall dfx
+    -   Install [dfx SDK](https://internetcomputer.org/docs/current/developer-docs/build/install-upgrade-remove/)
 
 -   Frontend:
 
