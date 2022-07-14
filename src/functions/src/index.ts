@@ -29,7 +29,7 @@ exports.requestAIToProcessVideo = functions.storage
 
 				const key: Identity = Ed25519KeyIdentity.generate();
 				// This is hardcoded. This should be imported from env
-				const backend = createActor<_SERVICE>("i2iw7-yqaaa-aaaan-qahqq-cai", idlFactory, { identity: key });
+				const backend = createActor<_SERVICE>("i2iw7-yqaaa-aaaan-qahqq-dai", idlFactory, { identity: key });
 
 				if (operation.name) {
 					await backend.updateVideoStatus(
