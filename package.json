@@ -1,0 +1,16 @@
+{
+	"name": "supernova-moderation-dapp",
+	"version": "0.3",
+	"scripts": {
+		"build": "npm run frontend:build",
+		"backend:build": "dfx deploy --no-wallet backend && npm run generate",
+		"frontend:build": "npm run --prefix ./src/frontend build",
+		"prefrontend:dev": "npm run generate",
+		"frontend:dev": "npm run --prefix ./src/frontend dev",
+		"functions:build": "npm run --prefix ./src/functions build",
+		"functions:deploy": "npm run --prefix ./src/functions deploy",
+		"generate": "dfx generate backend",
+		"postgenerate": "cp -r ./src/declarations ./src/frontend/src/ && cp -r ./src/declarations ./src/functions/src/ && rm -rf ./src/declarations",
+		"postinstall": "find ./src/* -maxdepth 2 -name package.json -execdir npm install \\;"
+	}
+}
